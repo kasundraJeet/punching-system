@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 <template>
     <main class="client-layout-wrapper">
         <ScrollArea class="w-full h-full">
-            <div class="flex flex-col w-full h-dvh py-2 max-[360px]:px-2.5">
+            <div class="flex flex-col w-full h-dvh py-2 px-2.5">
                 <div class="flex items-center justify-end gap-2">
                     <Button variant="outline" size="icon">
                         <Info class="w-5 h-5" />
@@ -43,7 +43,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-                <div class="h-full w-full pt-2">
+                <div class="h-full w-full pt-2 px-4">
                     <slot />
                 </div>
             </div>
