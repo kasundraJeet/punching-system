@@ -4,6 +4,6 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper.vue";
 
 <template>
     <LayoutWrapper>
-        
+
     </LayoutWrapper>
 </template>

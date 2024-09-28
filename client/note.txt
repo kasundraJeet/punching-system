@@ -1,0 +1,33 @@
+user dataTable
+
+name
+email
+password
+
+
+
+## profile
+
+--
+Profile Picture
+Bio
+name
+phone number
+email
+
+--
+password change
+
+{
+  "adminProfile": {
+    "profilePicture": "url_to_profile_picture.jpg",
+    "bio": "Brief summary about the admin's professional background and skills.",
+    "name": "John Doe",
+    "phoneNumber": "+1234567890",
+    "email": "john.doe@example.com"
+  },
+  "passwordChange": {
+    "currentPassword": "current_password",
+    "newPassword": "new_password"
+  }
+}

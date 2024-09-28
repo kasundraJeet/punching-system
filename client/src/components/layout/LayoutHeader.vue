@@ -6,8 +6,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+    DropdownMenuShortcut
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { LogOut, CircleUserRound, Settings } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button'
 import { useColorMode } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
@@ -15,7 +17,12 @@ import { Icon } from '@iconify/vue'
 const navLinks = [
     {
         link_name: "Home",
-        link_paht: "/admin",
+        link_path: "/admin",
+        is: 1
+    },
+    {
+        link_name: "User",
+        link_path: "/admin",
         is: 1
     }
 ]
@@ -62,13 +69,23 @@ const mode = useColorMode()
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent align="end" class="w-44">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <CircleUserRound class="mr-2 h-4 w-4" />
+                        Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <Settings class="mr-2 h-4 w-4" />
+                        Setting
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem class="text-red-400 cursor-pointer">
+                        <LogOut class="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                        <DropdownMenuShortcut>⌘Q</DropdownMenuShortcut>
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
