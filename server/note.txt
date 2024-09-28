@@ -1,0 +1,17 @@
+hii chatgpt i crete punching in vue js and node js
+in vue js i crete admin panel and client side this app i have many user only punching and punchout and one admin acess
+setup this app node js authentication code use sequelize and mysql2 and database is mysql2
+
+my node js folder is
+
+app.js
+config
+controllers
+helpers
+middlewares
+models
+routers
+.env
+
+
+setup authentication for user and first sign-up
