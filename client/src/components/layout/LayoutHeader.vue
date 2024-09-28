@@ -34,9 +34,7 @@ const mode = useColorMode()
     <header class="layout-header">
         <ul class="flex items-center gap-2">
             <li v-for="(item, index) in navLinks" :key="index">
-                <Button variant="link">
-                    {{ item.link_name }}
-                </Button>
+                <RouterLink class="link" :to="item.link_path">{{ item.link_name }}</RouterLink>
             </li>
         </ul>
         <div class="flex items-center gap-4">
@@ -95,5 +93,17 @@ const mode = useColorMode()
 <style>
 .layout-header {
     @apply w-full py-2 px-3.5 flex items-center justify-between
+}
+</style>
+
+<style scoped>
+.link {
+    @apply py-1.5 px-2.5 block capitalize
+}
+
+.link:hover,
+.link:focus,
+.link.active {
+    @apply underline text-primary underline-offset-4
 }
 </style>

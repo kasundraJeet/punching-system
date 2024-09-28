@@ -9,6 +9,36 @@ const router = createRouter({
       component: () => import('@/views/HomeView.vue')
     },
     {
+      path: '/auth',
+      children: [
+        {
+          path: 'sign-up',
+          name: 'signUp',
+          component: () => import('@/views/SignUpView.vue')
+        },
+        {
+          path: 'sign-in',
+          name: 'signIn',
+          component: () => import('@/views/SignInView.vue')
+        },
+        {
+          path: 'otp',
+          name: 'otp',
+          component: () => import('@/views/OTPView.vue')
+        },
+        {
+          path: 'crete-password',
+          name: 'crete-password',
+          component: () => import('@/views/CretePassword.vue')
+        },
+        {
+          path: 'forgot-password',
+          name: 'forgot-password',
+          component: () => import('@/views/ForgotPassword.vue')
+        }
+      ]
+    },
+    {
       path: '/admin',
       children: [
         {
