@@ -1,13 +1,9 @@
 import { toast } from 'vue-sonner'
 import { fetchWrapper } from '@/helpers/apiconfing'
 
-export const ApiWrapper = async (url, method, body = {}) => {
+export const ApiWrapper = async (url, body) => {
   try {
-    const response = await fetchWrapper({
-      method: method,
-      url: url,
-      data: body
-    })
+    const response = await fetchWrapper.post(`${import.meta.env.VITE_API_URL}/${url}`, body)
 
     return response.data
   } catch (e) {

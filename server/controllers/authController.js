@@ -6,6 +6,7 @@ const { generateOTP } = require("../helpers/otp");
 const { Op } = require("sequelize");
 
 exports.sendOtp = async (req, res) => {
+  console.log("send-otp api callednd")
   try {
     const { email } = req.body;
 

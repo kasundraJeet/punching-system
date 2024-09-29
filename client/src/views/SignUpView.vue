@@ -1,15 +1,37 @@
 <script setup lang="ts">
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@/components/ui/form'
 import { ref } from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
 import { LoaderCircle, Github } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button'
+import { ApiWrapper } from '@/helpers/apiWrapper';
 
 const isLoading = ref(false)
 
-async function onSubmit(event) {
-    console.log(event)
-}
+const formSchema = toTypedSchema(z.object({
+    email: z.string().email(),
+}));
+
+const form = useForm({
+    validationSchema: formSchema,
+})
+
+const onSubmit = form.handleSubmit((values) => {
+    const from_data = new FormData()
+    from_data.append("email", values.email)
+    const data = ApiWrapper("auth/send-otp", from_data)
+    console.log(data)
+})
 </script>
 
 <template>
@@ -28,13 +50,16 @@ async function onSubmit(event) {
                     <div class="space-y-6">
                         <form @submit="onSubmit">
                             <div class="grid gap-2">
-                                <div class="grid gap-1">
-                                    <Label class="sr-only" for="email">
-                                        Email
-                                    </Label>
-                                    <Input id="email" placeholder="name@example.com" type="email" auto-capitalize="none"
-                                        auto-complete="email" auto-correct="off" :disabled="isLoading" />
-                                </div>
+                                <FormField v-slot="{ componentField }" name="email" class="grid gap-1">
+                                    <FormItem>
+                                        <FormLabel class="sr-only" for="email"> Email</FormLabel>
+                                        <FormControl>
+                                            <Input id="email" placeholder="name@example.com" type="email"
+                                                :disabled="isLoading" v-bind="componentField" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                </FormField>
                                 <Button :disabled="isLoading">
                                     <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
                                     Sign In with Email
