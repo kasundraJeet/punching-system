@@ -38,7 +38,7 @@ const onSubmit = form.handleSubmit((values) => {
     <ScrollArea as="main">
         <div class="flex items-center w-full h-dvh justify-center">
             <div class="lg:p-8">
-                <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+                <div class="mx-auto flex w-full flex-col justify-center space-y-6 px-2 sm:w-[350px]">
                     <div class="flex flex-col space-y-2 text-center">
                         <h1 class="text-2xl font-semibold tracking-tight">
                             Create an account

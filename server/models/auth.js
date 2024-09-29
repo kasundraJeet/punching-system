@@ -1,29 +1,17 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const User = sequelize.define('User', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: true, // Allow name to be nullable at first signup
-  },
+const Auth = sequelize.define('Auth', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
   },
-  password: {
+  password_hash: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
-  profile_pic: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  bio: {
-    type: DataTypes.TEXT,
-    allowNull: true, 
-  },
-  number: {
+  salt: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -40,10 +28,30 @@ const User = sequelize.define('User', {
     defaultValue: false,
   },
   role: {
-    type: DataTypes.INTEGER, 
+    type: DataTypes.INTEGER,
     defaultValue: 0,
     allowNull: false,
   },
+  last_login: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  token_expires_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 });
 
-module.exports = User;
+module.exports = Auth;
