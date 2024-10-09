@@ -1,36 +1,51 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/auth");
+const { User, Auth } = require("../models");
+const {
+  successResponseWithData,
+  validationErrorWithData,
+} = require("../helpers/responseHandlers");
+const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 const { sendOTP } = require("../helpers/email");
-const { errorResponse } = require("../helpers/responseHandlers");
-const { generateOTP } = require("../helpers/otp");
-const { Op } = require("sequelize");
 
 exports.sendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return validationErrorWithData(res, "Email is required", {
+      field: "email",
+    });
+  }
+
   try {
-    const { email } = req.body;
-    console.log(email);
-    // const existingUser = await User.findOne({ where: { email } });
-    // if (existingUser && existingUser.isVerified) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "User already exists and is verified" });
-    // }
+    const existingUser = await Auth.findOne({
+      where: { session_email: email },
+    });
+    if (existingUser) {
+      return validationErrorWithData(res, "User already exists", {
+        field: "email",
+      });
+    }
 
-    // const otp = generateOTP();
+    const otp = crypto.randomInt(100000, 999999);
+    const otpExpiry = new Date(Date.now() + 1000 * 60 * 10);
 
-    // const otpExpires = Date.now() + 5 * 60 * 1000;
+    await sendOTP(email, otp);
 
-    // if (existingUser) {
-    //   await User.update({ otp, otpExpires }, { where: { email } });
-    // } else {
-    //   await User.create({ email, otp, otpExpires, role: "user" });
-    // }
+    const sessionId = uuidv4();
 
-    // await sendOTP(email, otp);
+    await Auth.create({
+      session_id: sessionId,
+      session_email: email,
+      session_otp: otp.toString(),
+      session_otp_expires_at: otpExpiry,
+      session_is_verified: false,
+    });
 
-    // res.status(200).json({ message: "OTP sent to email" });
-  } catch (e) {
-    errorResponse(res, `Error sending OTP`);
+    return successResponseWithData(res, "OTP has been sent to your email", {
+      email,
+    });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    return errorResponse(res, "Internal Server Error");
   }
 };

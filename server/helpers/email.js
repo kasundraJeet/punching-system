@@ -14,7 +14,7 @@ exports.sendOTP = async (email, otp) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`,
+    text: `Your OTP code is ${otp}. It is valid for 10 minutes.`,
   };
 
   return transporter.sendMail(mailOptions);
