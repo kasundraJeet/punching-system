@@ -22,6 +22,11 @@ const router = createRouter({
           component: () => import('@/views/SignInView.vue')
         },
         {
+          path: 'otp-send-successfully',
+          name: 'otp-send-successfully',
+          component: () => import('@/views/OTPSendView.vue')
+        },
+        {
           path: 'otp',
           name: 'otp',
           component: () => import('@/views/OTPView.vue')

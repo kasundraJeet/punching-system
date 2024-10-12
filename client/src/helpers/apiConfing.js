@@ -60,7 +60,7 @@ function authHeader(url) {
 
 async function handleResponse(response) {
   const isJson = response.headers?.get('content-type')?.includes('application/json')
-  const data = isJson ? await response.json() : null
+  const data = isJson ? await response : null
 
   if (data === null) {
     const error = 'Server error: No valid response data'

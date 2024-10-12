@@ -1,10 +1,10 @@
 import { toast } from 'vue-sonner'
-import { fetchWrapper } from '@/helpers/apiconfing'
+import axios from 'axios';
 
 export const ApiWrapper = async (url, body) => {
   try {
-    const response = await fetchWrapper.post(`${import.meta.env.VITE_API_URL}/${url}`, body)
-
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/${url}`, body)
+    console.log(response);
     return response.data
   } catch (e) {
     toast.error(e.response?.data?.message || e.message)

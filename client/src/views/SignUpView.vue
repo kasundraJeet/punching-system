@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
+import { toast } from 'vue-sonner'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import {
@@ -15,6 +16,9 @@ import { Input } from '@/components/ui/input'
 import { LoaderCircle, Github } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button'
 import { ApiWrapper } from '@/helpers/apiWrapper';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const isLoading = ref(false)
 
@@ -26,12 +30,24 @@ const form = useForm({
     validationSchema: formSchema,
 })
 
-const onSubmit = form.handleSubmit((values) => {
-    const from_data = new FormData()
-    from_data.append("email", values.email)
-    const data = ApiWrapper("auth/send-otp", from_data)
-    console.log(data)
-})
+const onSubmit = form.handleSubmit(async (values) => {
+    isLoading.value = true
+    const form_data = new FormData();
+    form_data.append("email", values.email);
+
+    try {
+        const response = await ApiWrapper("auth/send-otp", form_data);
+
+        if (response.success == 1) {
+            router.push({ name: "otp-send-successfully" })
+            isLoading.value = false
+            toast.success(response.message)
+        }
+
+    } catch (e) {
+        console.error("Error sending OTP:", e);
+    }
+});
 </script>
 
 <template>
@@ -61,7 +77,10 @@ const onSubmit = form.handleSubmit((values) => {
                                             <FormMessage />
                                         </FormItem>
                                     </FormField>
-                                    <p class="text-xs text-muted-foreground text-end">I have an account <RouterLink to="/auth/sign-in" class="underline underline-offset-4 text-primary">Sign In</RouterLink></p>
+                                    <p class="text-xs text-muted-foreground text-end">I have an account <RouterLink
+                                            to="/auth/sign-in" class="underline underline-offset-4 text-primary">Sign In
+                                        </RouterLink>
+                                    </p>
                                 </div>
                                 <Button :disabled="isLoading">
                                     <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
