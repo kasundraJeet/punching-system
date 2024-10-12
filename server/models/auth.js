@@ -44,6 +44,14 @@ const Auth = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    sweet_password: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     session_is_verified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

@@ -3,13 +3,66 @@ import { ref } from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
 import { LoaderCircle } from 'lucide-vue-next';
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
+import { ApiWrapper } from '@/helpers/apiWrapper';
+import { useForm } from 'vee-validate'
+import { toast } from 'vue-sonner'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod';
+import { useRouter } from 'vue-router';
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@/components/ui/form'
+import { useAuthStore } from '@/stores';
 
+
+const router = useRouter()
 const isLoading = ref(false)
 
-async function onSubmit(event) {
-    console.log(event)
-}
+const formSchema = toTypedSchema(z.object({
+    password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+    confirm_password: z.string().min(6, { message: "Confirm password must be at least 6 characters" }),
+}).refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match",
+    path: ["confirm_password"],
+})
+);
+
+const authStore = useAuthStore()
+
+
+const form = useForm({
+    validationSchema: formSchema,
+})
+
+const onSubmit = form.handleSubmit(async (values) => {
+    isLoading.value = true
+    const form_data = new FormData();
+    form_data.append("password", values.password);
+    form_data.append("confirm_password", values.confirm_password);
+    form_data.append("session_id", authStore.sessionId);
+
+    try {
+        const response = await ApiWrapper("auth/create-password", form_data);
+
+        if (response.success == 1) {
+            router.push({ name: "signIn" })
+            isLoading.value = false
+            toast.success(response.message)
+        }
+        else {
+            isLoading.value = false
+        }
+
+    } catch (e) {
+        isLoading.value = false
+        console.error("Error sending OTP:", e);
+    }
+});
 </script>
 
 <template>
@@ -29,22 +82,27 @@ async function onSubmit(event) {
                         <form @submit="onSubmit">
                             <div class="grid gap-3">
                                 <div class="w-full space-y-2">
-                                    <div class="grid gap-1">
-                                        <Label class="sr-only" for="email">
-                                            Email
-                                        </Label>
-                                        <Input id="email" placeholder="New Password" type="password"
-                                            auto-capitalize="none" auto-complete="email" auto-correct="off"
-                                            :disabled="isLoading" />
-                                    </div>
-                                    <div class="grid gap-1">
-                                        <Label class="sr-only" for="email">
-                                            Email
-                                        </Label>
-                                        <Input id="email" placeholder="Confirm Password" type="password"
-                                            auto-capitalize="none" auto-complete="email" auto-correct="off"
-                                            :disabled="isLoading" />
-                                    </div>
+                                    <FormField v-slot="{ componentField }" name="password" class="grid gap-1">
+                                        <FormItem>
+                                            <FormLabel class="sr-only" for="password"> Password</FormLabel>
+                                            <FormControl>
+                                                <Input id="password" placeholder="New Password" type="password"
+                                                    :disabled="isLoading" v-bind="componentField" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    </FormField>
+                                    <FormField v-slot="{ componentField }" name="confirm_password" class="grid gap-1">
+                                        <FormItem>
+                                            <FormLabel class="sr-only" for="confirm_password"> Confirm Password
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input id="confirm_password" placeholder="Confirm Password"
+                                                    type="password" :disabled="isLoading" v-bind="componentField" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    </FormField>
                                 </div>
                                 <Button :disabled="isLoading">
                                     <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />

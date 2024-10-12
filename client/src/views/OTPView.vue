@@ -11,8 +11,10 @@ import {
     PinInputInput,
 } from '@/components/ui/pin-input';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores';
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const isLoading = ref(false)
 
@@ -20,26 +22,26 @@ const value = ref([])
 const handleComplete = (e) => console.log(e.join(''))
 
 async function onSubmit() {
-    // isLoading.value = true
-    // const form_data = new FormData();
-    // form_data.append("otp", value.value.join(''));
+    isLoading.value = true
+    const form_data = new FormData();
+    form_data.append("otp", value.value.join(''));
+    form_data.append("session_id", authStore.sessionId);
 
-    // try {
-    //     const response = await ApiWrapper("auth/send-otp", form_data);
+    try {
+        const response = await ApiWrapper("auth/verify-otp", form_data);
 
-    //     if (response.success == 1) {
-    //         router.push({ name: "otp" })
-    //         isLoading.value = false
-    //         toast.success(response.message)
-    //     }
-    //     else {
-    //         isLoading.value = false
-    //     }
+        if (response.success == 1) {
+            router.push({ name: "crete-password" })
+            isLoading.value = false
+            toast.success(response.message)
+        } else {
+            isLoading.value = false
+        }
 
-    // } catch (e) {
-    //     isLoading.value = false
-    //     console.error("Error sending OTP:", e);
-    // }
+    } catch (e) {
+        isLoading.value = false
+        console.error("Error sending OTP:", e);
+    }
 }
 </script>
 
