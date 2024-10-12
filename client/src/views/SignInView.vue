@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
-import { LoaderCircle, Github } from 'lucide-vue-next';
+import { LoaderCircle, Github, Plus } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button'
 
 const isLoading = ref(false)
@@ -44,7 +44,7 @@ async function onSubmit(event) {
                                         <Input id="password" placeholder="Password" type="password"
                                             auto-capitalize="none" auto-complete="password" auto-correct="off"
                                             :disabled="isLoading" />
-                                        <RouterLink to="/"
+                                        <RouterLink to="/auth/forgot-password"
                                             class="underline underline-offset-4 hover:text-primary text-sm text-muted-foreground text-end">
                                             Forget Password?
                                         </RouterLink>
@@ -66,11 +66,20 @@ async function onSubmit(event) {
                                 </span>
                             </div>
                         </div>
-                        <Button variant="outline" type="button" class="w-full" :disabled="isLoading">
-                            <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-                            <Github v-else class="mr-2 h-4 w-4" />
-                            GitHub
-                        </Button>
+                        <div class="space-y-2">
+                            <Button variant="outline" type="button" class="w-full" :disabled="isLoading">
+                                <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+                                <Github v-else class="mr-2 h-4 w-4" />
+                                GitHub
+                            </Button>
+                            <Button  variant="outline" type="button" class="w-full" :disabled="isLoading" as-child>
+                                <RouterLink to="/auth/sign-up" class="flex items-center">
+                                    <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+                                    <Plus v-else class="mr-2 h-4 w-4" />
+                                    Create Account
+                                </RouterLink>
+                            </Button>
+                        </div>
                     </div>
                     <p class="px-8 text-center text-sm text-muted-foreground">
                         By clicking continue, you agree to our

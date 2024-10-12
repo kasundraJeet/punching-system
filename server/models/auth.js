@@ -1,9 +1,8 @@
-const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const User = require("./user");
+const { DataTypes } = require("sequelize");
 
 const Auth = sequelize.define(
-  "Auth",
+  "session",
   {
     session_id: {
       type: DataTypes.STRING,
@@ -24,10 +23,6 @@ const Auth = sequelize.define(
     session_user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: User,
-        key: "id",
-      },
     },
     session_user_role: {
       type: DataTypes.INTEGER,
@@ -56,9 +51,8 @@ const Auth = sequelize.define(
   },
   {
     timestamps: true,
+    tableName: "sessions",
   }
 );
-
-Auth.belongsTo(User, { foreignKey: "session_user_id", as: "user" });
 
 module.exports = Auth;

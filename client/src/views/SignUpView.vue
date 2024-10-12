@@ -49,17 +49,20 @@ const onSubmit = form.handleSubmit((values) => {
                     </div>
                     <div class="space-y-6">
                         <form @submit="onSubmit">
-                            <div class="grid gap-2">
-                                <FormField v-slot="{ componentField }" name="email" class="grid gap-1">
-                                    <FormItem>
-                                        <FormLabel class="sr-only" for="email"> Email</FormLabel>
-                                        <FormControl>
-                                            <Input id="email" placeholder="name@example.com" type="email"
-                                                :disabled="isLoading" v-bind="componentField" />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                </FormField>
+                            <div class="grid gap-4">
+                                <div class="space-y-1.5">
+                                    <FormField v-slot="{ componentField }" name="email" class="grid gap-1">
+                                        <FormItem>
+                                            <FormLabel class="sr-only" for="email"> Email</FormLabel>
+                                            <FormControl>
+                                                <Input id="email" placeholder="name@example.com" type="email"
+                                                    :disabled="isLoading" v-bind="componentField" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    </FormField>
+                                    <p class="text-xs text-muted-foreground text-end">I have an account <RouterLink to="/auth/sign-in" class="underline underline-offset-4 text-primary">Sign In</RouterLink></p>
+                                </div>
                                 <Button :disabled="isLoading">
                                     <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
                                     Sign In with Email

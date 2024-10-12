@@ -1,4 +1,4 @@
-const { User, Auth } = require("../models");
+const { Auth } = require("../models");
 const {
   successResponseWithData,
   validationErrorWithData,
@@ -45,7 +45,6 @@ exports.sendOtp = async (req, res) => {
       email,
     });
   } catch (error) {
-    console.error("Error sending OTP:", error);
     return errorResponse(res, "Internal Server Error");
   }
 };

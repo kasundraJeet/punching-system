@@ -1,9 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const Auth = require("./auth");
 
 const User = sequelize.define(
-  "User",
+  "user",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -61,8 +60,8 @@ const User = sequelize.define(
   },
   {
     timestamps: true,
+    tableName: "users",
   }
 );
 
-User.hasMany(Auth, { foreignKey: "session_user_id", as: "authSessions" });
 module.exports = User;

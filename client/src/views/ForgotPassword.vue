@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
-import { LoaderCircle, Github } from 'lucide-vue-next';
+import { LoaderCircle ,ArrowLeft } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button'
 
 const isLoading = ref(false)
@@ -38,6 +38,13 @@ async function onSubmit(event) {
                                 <Button :disabled="isLoading">
                                     <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
                                     Recover Password with Email
+                                </Button>
+                                <Button variant="outline" type="button" class="w-full" :disabled="isLoading" as-child>
+                                    <RouterLink to="/auth/sign-in" class="flex items-center">
+                                        <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+                                        <ArrowLeft v-else class="mr-2 h-4 w-4" />
+                                        Go Back
+                                    </RouterLink>
                                 </Button>
                             </div>
                         </form>
