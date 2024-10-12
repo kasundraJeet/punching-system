@@ -17,7 +17,7 @@ import { LoaderCircle, Github } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button'
 import { ApiWrapper } from '@/helpers/apiWrapper';
 import { useRouter } from 'vue-router';
-
+import { useAuthStore } from '@/stores';
 const router = useRouter()
 
 const isLoading = ref(false)
@@ -30,6 +30,8 @@ const form = useForm({
     validationSchema: formSchema,
 })
 
+const authStore = useAuthStore()
+
 const onSubmit = form.handleSubmit(async (values) => {
     isLoading.value = true
     const form_data = new FormData();
@@ -39,12 +41,17 @@ const onSubmit = form.handleSubmit(async (values) => {
         const response = await ApiWrapper("auth/send-otp", form_data);
 
         if (response.success == 1) {
-            router.push({ name: "otp-send-successfully" })
+            router.push({ name: "otp" })
             isLoading.value = false
             toast.success(response.message)
+            authStore.setSessionId(response.data.sessionId)
+        }
+        else {
+            isLoading.value = false
         }
 
     } catch (e) {
+        isLoading.value = false
         console.error("Error sending OTP:", e);
     }
 });

@@ -14,19 +14,19 @@ const Auth = sequelize.define(
     },
     session_token: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     session_expires_at: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     session_user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     session_user_role: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     user_fcm_token: {
       type: DataTypes.STRING,
