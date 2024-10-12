@@ -1,4 +1,4 @@
-const { Auth } = require("../models");
+const { Auth, User } = require("../models");
 const {
   successResponseWithData,
   validationErrorWithData,
@@ -8,7 +8,6 @@ const { v4: uuidv4 } = require("uuid");
 const { sendOTP } = require("../helpers/email");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-
 
 exports.sendOtp = async (req, res) => {
   const { email } = req.body;
@@ -87,7 +86,6 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-
 exports.createPassword = async (req, res) => {
   const { password, confirm_password, session_id } = req.body;
 
@@ -135,6 +133,71 @@ exports.createPassword = async (req, res) => {
         session_id: session_id,
       }
     );
+  } catch (e) {
+    console.log(e);
+    return errorResponse(res, "Internal Server Error");
+  }
+};
+
+exports.signIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return validationErrorWithData(res, "Email and password are required", {
+      field: !email ? "email" : "password",
+    });
+  }
+
+  try {
+    const session = await Auth.findOne({
+      where: {
+        session_email: email,
+      },
+    });
+
+    if (!session) {
+      return errorResponse(res, "Invalid email or password");
+    }
+
+    if (!session.session_is_verified) {
+      return errorResponse(res, "Session is not verified");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, session.password);
+
+    if (!isPasswordValid) {
+      return validationErrorWithData(res, "Invalid email or password", {
+        field: "password",
+      });
+    }
+
+    const lastLogin = new Date();
+    session.user_last_login = lastLogin;
+
+    const sessionToken = crypto.randomBytes(64).toString("hex");
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
+    session.session_token = sessionToken;
+    session.session_expires_at = expiresAt;
+
+    let user = await User.findOne({
+      where: { email: session.session_email },
+    });
+
+    if (!user) {
+      user = await User.create({
+        id: parseInt(session.dataValues.session_id),
+        email: session.session_email,
+        user_status: 1,
+        is_deleted: false,
+      });
+    }
+
+    await session.save();
+
+    return successResponseWithData(res, "Login successful", {
+      session_id: session.session_id,
+      email: session.session_email,
+    });
   } catch (e) {
     console.log(e);
     return errorResponse(res, "Internal Server Error");

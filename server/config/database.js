@@ -21,7 +21,7 @@ try {
 }
 
 sequelize
-  .sync({ force: true })
+  .sync()
   .then(() => {
     console.log("All models were synchronized successfully.");
   })
