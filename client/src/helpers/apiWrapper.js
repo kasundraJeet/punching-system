@@ -7,7 +7,11 @@ const router = useRouter()
 
 export const ApiWrapper = async (url, body) => {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/${url}`, body)
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/${url}`, body, {
+      headers: {
+        'token': authStore.sessionToken || null
+      }
+    })
 
     if (response.data.success == 2) {
       authStore.setSessionToken(null)

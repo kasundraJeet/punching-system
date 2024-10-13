@@ -70,10 +70,20 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
-  const publicPages = ['/auth/sign-in', '/auth/sign-up', '/auth/otp-send-successfully', '/auth/otp', '/auth/crete-password', '/auth/forgot-password']
-  const authRequired = !publicPages.includes(to.path)
-  if (authRequired && !authStore.sessionToken) {
+  const publicPages = [
+    '/auth/sign-in',
+    '/auth/sign-up',
+    '/auth/otp-send-successfully',
+    '/auth/otp',
+    '/auth/crete-password',
+    '/auth/forgot-password'
+  ]
+  const authPage = !publicPages.includes(to.path)
+  if (authPage && !authStore.sessionToken) {
     return '/auth/sign-in'
+  }
+  if (authStore.sessionToken && !authPage) {
+    return '/'
   }
 })
 

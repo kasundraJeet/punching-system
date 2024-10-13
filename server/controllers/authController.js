@@ -202,3 +202,8 @@ exports.signIn = async (req, res) => {
     return errorResponse(res, "Internal Server Error");
   }
 };
+
+
+exports.signOut = async (req, res) => {
+  return successResponse(res, "Sign out successful");
+};
