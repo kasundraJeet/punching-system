@@ -3,10 +3,16 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('authStore', () => {
   const sessionId = ref(getCookie('sessionId') || null)
+  const sessionToken = ref(getCookie('sessionToken') || null)
 
   function setSessionId(id) {
     sessionId.value = id
     setCookie('sessionId', id, 7)
+  }
+
+  function setSessionToken(token) {
+    sessionToken.value = token
+    setCookie('sessionToken', token, 7)
   }
 
   function setCookie(name, value, days) {
@@ -22,5 +28,5 @@ export const useAuthStore = defineStore('authStore', () => {
     return null
   }
 
-  return { sessionId, setSessionId }
+  return { sessionId, setSessionId, sessionToken, setSessionToken }
 })

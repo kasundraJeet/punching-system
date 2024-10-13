@@ -195,8 +195,7 @@ exports.signIn = async (req, res) => {
     await session.save();
 
     return successResponseWithData(res, "Login successful", {
-      session_id: session.session_id,
-      email: session.session_email,
+      sessionToken,
     });
   } catch (e) {
     console.log(e);

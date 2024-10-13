@@ -24,7 +24,7 @@ const validationErrorWithData = (res, msg, data) => {
 };
 
 const unauthorizedResponse = (res, msg) => {
-    const data = { success: 0, message: msg };
+    const data = { success: 2, message: msg };
     return res.status(401).json(data);
 };
 

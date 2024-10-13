@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,9 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form';
+import { useAuthStore } from '@/stores/authStore';
 
+const authStore = useAuthStore()
 const router = useRouter()
 const isLoading = ref(false)
 
@@ -42,6 +44,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         if (response.success == 1) {
             router.push({ name: "home" })
             isLoading.value = false
+            authStore.setSessionToken(response.data.sessionToken)
             toast.success(response.message)
         }
         else {

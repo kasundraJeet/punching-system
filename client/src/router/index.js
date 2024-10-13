@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,6 +8,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/HomeView.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/UserProfileView.vue')
     },
     {
       path: '/auth',
@@ -53,12 +59,22 @@ const router = createRouter({
         },
         {
           path: 'profile',
-          name: 'profile',
+          name: 'adminProfile',
           component: () => import('@/views/ProfileView.vue')
         }
       ]
     }
   ]
+})
+
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore()
+
+  const publicPages = ['/auth/sign-in', '/auth/sign-up', '/auth/otp-send-successfully', '/auth/otp', '/auth/crete-password', '/auth/forgot-password']
+  const authRequired = !publicPages.includes(to.path)
+  if (authRequired && !authStore.sessionToken) {
+    return '/auth/sign-in'
+  }
 })
 
 export default router

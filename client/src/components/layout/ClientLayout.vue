@@ -31,9 +31,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
                         <DropdownMenuContent align="end" class="w-80">
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <CircleUserRound class="mr-2 h-4 w-4" />
-                                Profile
+                            <DropdownMenuItem as-child>
+                                <RouterLink to="/profile" class="flex items-center">
+                                    <CircleUserRound class="mr-2 h-4 w-4" />
+                                    Profile
+                                </RouterLink>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem class="text-red-400 cursor-pointer">
