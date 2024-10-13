@@ -69,3 +69,18 @@ exports.sendOtp = async (req, res) => {
   //   return errorResponse(res, "Internal Server Error");
   // }
 };
+
+
+user punch in and punch out
+user id
+punched
+punch in time
+punch out time
+
+filter - active status , inactive status , monthly total hours , total punch in , total punch out , missing punch in(day) , missing punch out(day)
+
+
+active status - 1
+inactive status - 0
+or - 2
+

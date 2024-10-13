@@ -25,7 +25,7 @@ onMounted(() => {
   });
 });
 
-// Animate button click
+
 const animateButton = (event) => {
   ispunched.value = true;
   const button = event.target;
@@ -66,7 +66,7 @@ watch(ispunched, (newValue) => {
       <div></div>
       <div class="w-full flex items-center justify-center">
         <Button class="box" @click="animateButton" variant="secondary">
-          Secondary
+          Puch In
         </Button>
       </div>
       <div>

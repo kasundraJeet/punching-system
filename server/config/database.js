@@ -11,8 +11,6 @@ const sequelize = new Sequelize(
   }
 );
 
-// const { User, Auth } = require("../models/associations");
-
 try {
   sequelize.authenticate();
   console.log("Connection has been established successfully.");

@@ -10,7 +10,29 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LogOut, CircleUserRound, Info } from 'lucide-vue-next';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores';
+import { ApiWrapper } from '@/helpers/apiWrapper';
+import { toast } from 'vue-sonner';
+
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+async function handleLogOut() {
+    try {
+        const response = await ApiWrapper("auth/sign-out", {});
+        if (response.success == 1) {
+            authStore.sessionId = null;
+            authStore.sessionToken = null;
+            toast.success(response.message)
+            router.push({ name: "signIn" });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 </script>
 
 <template>
@@ -38,7 +60,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
                                 </RouterLink>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem class="text-red-400 cursor-pointer">
+                            <DropdownMenuItem class="text-red-400 cursor-pointer" @click="handleLogOut">
                                 <LogOut class="mr-2 h-4 w-4" />
                                 <span>Log out</span>
                             </DropdownMenuItem>

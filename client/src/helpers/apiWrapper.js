@@ -9,7 +9,7 @@ export const ApiWrapper = async (url, body) => {
   try {
     const response = await axios.post(`${import.meta.env.VITE_API_URL}/${url}`, body, {
       headers: {
-        'token': authStore.sessionToken || null
+        token: authStore.sessionToken || null
       }
     })
 

@@ -3,6 +3,7 @@ const {
   successResponseWithData,
   validationErrorWithData,
   errorResponse,
+  successResponse
 } = require("../helpers/responseHandlers");
 const { v4: uuidv4 } = require("uuid");
 const { sendOTP } = require("../helpers/email");
@@ -203,7 +204,21 @@ exports.signIn = async (req, res) => {
   }
 };
 
-
 exports.signOut = async (req, res) => {
-  return successResponse(res, "Sign out successful");
+  const token = req.headers["token"];
+
+  try {
+    const session = await Auth.findOne({
+      where: { session_token: token },
+    });
+
+    session.session_token = null;
+    session.session_expires_at = null;
+    await session.save();
+
+    return successResponse(res, "Sign out successful");
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res, "Internal Server Error");
+  }
 };
