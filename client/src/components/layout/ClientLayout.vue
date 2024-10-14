@@ -12,22 +12,23 @@ import {
 import { LogOut, CircleUserRound, Info } from 'lucide-vue-next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores';
 import { ApiWrapper } from '@/helpers/apiWrapper';
+import { useAuthStore } from '@/stores'
 import { toast } from 'vue-sonner';
 
-
-const router = useRouter()
 const authStore = useAuthStore()
+const router = useRouter()
 
 async function handleLogOut() {
     try {
-        const response = await ApiWrapper("auth/sign-out", {});
+        const response = await ApiWrapper("auth/sign-out");
         if (response.success == 1) {
-            authStore.sessionId = null;
-            authStore.sessionToken = null;
+            await authStore.deleteCookie('sessionToken')
+            await authStore.deleteCookie('sessionId')
+            await authStore.setSessionToken('')
+            await authStore.setSessionId('')
+            router.push({ name: 'signIn' })
             toast.success(response.message)
-            router.push({ name: "signIn" });
         }
     } catch (error) {
         console.log(error);

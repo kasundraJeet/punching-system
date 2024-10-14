@@ -15,10 +15,14 @@ export const useAuthStore = defineStore('authStore', () => {
     setCookie('sessionToken', token, 7)
   }
 
+  function deleteCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+  }
+
   function setCookie(name, value, days) {
     const date = new Date()
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
-    document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`
+    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`
   }
 
   function getCookie(name) {
@@ -28,5 +32,5 @@ export const useAuthStore = defineStore('authStore', () => {
     return null
   }
 
-  return { sessionId, setSessionId, sessionToken, setSessionToken }
+  return { sessionId, setSessionId, sessionToken, setSessionToken, deleteCookie }
 })
