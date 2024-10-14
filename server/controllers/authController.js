@@ -3,7 +3,7 @@ const {
   successResponseWithData,
   validationErrorWithData,
   errorResponse,
-  successResponse
+  successResponse,
 } = require("../helpers/responseHandlers");
 const { v4: uuidv4 } = require("uuid");
 const { sendOTP } = require("../helpers/email");
@@ -192,7 +192,7 @@ exports.signIn = async (req, res) => {
         is_deleted: false,
       });
     }
-
+    session.session_user_id = user.dataValues.id;
     await session.save();
 
     return successResponseWithData(res, "Login successful", {
