@@ -23,11 +23,6 @@ const Auth = sequelize.define(
     session_user_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      onDelete: 'CASCADE',  
     },
     session_user_role: {
       type: DataTypes.INTEGER,

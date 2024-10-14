@@ -2,8 +2,13 @@ const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 
 const PunchRecord = sequelize.define(
-  "PunchRecord",
+  "punch_records",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

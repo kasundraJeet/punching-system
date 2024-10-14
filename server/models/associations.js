@@ -1,7 +1,12 @@
-const User = require("./user");
-const Auth = require("./auth");
+const Auth = require('./auth');
+const User = require('./user');
+const PunchRecord = require('./puching');
 
-User.hasMany(Auth, { foreignKey: "session_user_id", as: "authSessions" });
-Auth.belongsTo(User, { foreignKey: "session_user_id", as: "user" });
+// Define associations
+Auth.belongsTo(User, { foreignKey: 'session_user_id', as: 'user' });
+User.hasMany(Auth, { foreignKey: 'session_user_id', as: 'sessions' });
 
-module.exports = { User, Auth };
+PunchRecord.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(PunchRecord, { foreignKey: 'user_id', as: 'punchRecords' });
+
+module.exports = { User, Auth, PunchRecord };
