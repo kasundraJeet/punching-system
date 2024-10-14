@@ -1,4 +1,5 @@
 <script setup>
+import {onMounted} from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,11 +14,31 @@ import { LogOut, CircleUserRound, Info } from 'lucide-vue-next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'vue-router';
 import { ApiWrapper } from '@/helpers/apiWrapper';
-import { useAuthStore } from '@/stores'
+import { useAuthStore , useUserStore } from '@/stores'
 import { toast } from 'vue-sonner';
 
 const authStore = useAuthStore()
 const router = useRouter()
+
+
+const userDetails = async () => {
+    try {
+        const response = await ApiWrapper("user/detail");
+
+        if (response.success == 1) {
+            useUserStore().setUserDetails(response.data)
+        }
+
+    } catch (e) {
+        console.error("Error sending OTP:", e);
+    }
+}
+
+onMounted(() => {
+    if(!useUserStore().userDetails){
+        userDetails()
+    }
+});
 
 async function handleLogOut() {
     try {

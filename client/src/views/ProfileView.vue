@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -14,6 +15,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { Plus } from 'lucide-vue-next';
 import LayoutWrapper from "@/components/layout/LayoutWrapper.vue";
+import { ApiWrapper } from '@/helpers/apiWrapper'
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
@@ -26,8 +28,28 @@ const form = useForm({
     validationSchema: formSchema,
 })
 
-const onSubmit = form.handleSubmit((values) => {
-    console.log('Form submitted!', values)
+const isLoading = ref(false)
+
+const onSubmit = form.handleSubmit( async (values) => {
+    isLoading.value = true
+    const form_data = new FormData();
+    form_data.append("email", values.name);
+    form_data.append("password", values.number);
+
+    try {
+        const response = await ApiWrapper("auth/sign-in", form_data);
+
+        if (response.success == 1) {
+            isLoading.value = false
+        }
+        else {
+            isLoading.value = false
+        }
+
+    } catch (e) {
+        isLoading.value = false
+        console.error("Error sending OTP:", e);
+    }
 })
 </script>
 

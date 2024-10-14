@@ -4,9 +4,11 @@ import ClientLayout from "@/components/layout/ClientLayout.vue";
 import { gsap } from 'gsap';
 import { Button } from '@/components/ui/button';
 import { ApiWrapper } from '@/helpers/apiWrapper';
+import { useUserStore } from '@/stores';
 
 const currentTime = ref('');
 const ispunched = ref(false);
+const ispunchedCompelete = ref(false);
 
 const updateTime = () => {
   const now = new Date();
@@ -25,8 +27,6 @@ onMounted(() => {
     clearInterval(interval);
   });
 });
-
-
 
 
 
@@ -49,36 +49,65 @@ watch(ispunched, (newValue) => {
 
 const isLoading = ref(false)
 
-const handlePuch = async () => {
-    isLoading.value = true
-    const form_data = new FormData();
-    form_data.append("punchStatus", "1");
+const handlePuch = async (status) => {
+  isLoading.value = true
+  const form_data = new FormData();
+  form_data.append("punchStatus", status);
 
-    try {
-        const response = await ApiWrapper("puch", form_data);
+  try {
+    const response = await ApiWrapper("puch", form_data);
 
-        if (response.success == 1) {
-            isLoading.value = false
-            ispunched.value(true)
-        }
-        else {
-            isLoading.value = false
-        }
-
-    } catch (e) {
-        isLoading.value = false
-        console.error("Error sending OTP:", e);
+    if (response.success == 1) {
+      isLoading.value = false
+      ispunched.value = true
+      puchChecker();
     }
+    else {
+      isLoading.value = false
+    }
+
+  } catch (e) {
+    isLoading.value = false
+    console.error("Error sending OTP:", e);
+  }
 };
+
+const puchChecker = async () => {
+  try {
+    const response = await ApiWrapper("puch-check");
+
+    if (response.success == 1) {
+      isLoading.value = false
+      ispunched.value = response.data.is_puching
+      if (response.data.status == 2) {
+        ispunchedCompelete.value = true
+      }
+    }
+    else {
+      isLoading.value = false
+    }
+
+  } catch (e) {
+    isLoading.value = false
+    console.error("Error sending OTP:", e);
+  }
+}
+
+onMounted(() => {
+  puchChecker()
+});
 </script>
 
 <template>
   <ClientLayout>
-    <div class="h-full w-full flex flex-col justify-between gap-4" v-if="!ispunched">
+    <div class="h-full w-full flex flex-col justify-between gap-4" v-if="!ispunchedCompelete">
       <div></div>
       <div class="w-full flex items-center justify-center">
-        <Button class="box" @click="handlePuch" variant="secondary">
+        <Button class="box" @click="handlePuch(1)" variant="secondary" v-if="!ispunched">
           Puch In
+        </Button>
+        <Button class="box" @click="handlePuch(2)" variant="secondary" v-else>
+          Puch Out
         </Button>
       </div>
       <div>
@@ -88,7 +117,9 @@ const handlePuch = async () => {
     <div class="h-full w-full flex flex-col justify-between gap-4" v-else>
       <div class="py-8">
         <h2>
-          <span v-for="word in 'thank you, jeet kasundra'.split(' ')" :key="word" class="animated-word">{{ word
+          <span
+            v-for="word in `Thank you, ${useUserStore().userDetails.name || 'User'} Your punch-in for today is complete. Enjoy your day!`.split(' ')"
+            :key="word" class="animated-word">{{ word
             }}</span>
         </h2>
       </div>
@@ -104,5 +135,6 @@ h2 {
 .animated-word {
   display: inline-block;
   margin-right: 8px;
+  line-height: 2;
 }
 </style>

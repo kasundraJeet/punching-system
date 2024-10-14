@@ -1,4 +1,5 @@
 const { Auth, User, PunchRecord } = require("../models");
+const { Op } = require("sequelize");
 const {
   successResponseWithData,
   validationErrorWithData,
@@ -18,7 +19,7 @@ exports.punchIn = async (req, res) => {
   try {
     const session = await Auth.findOne({
       where: { session_token: token },
-      include: [{ model: User, as: "user" }]
+      include: [{ model: User, as: "user" }],
     });
 
     if (!session) {
@@ -36,14 +37,14 @@ exports.punchIn = async (req, res) => {
         user_id,
         punch_in: new Date(),
         status: 1,
-        punch_date: new Date().toISOString().split('T')[0],
+        punch_date: new Date().toISOString().split("T")[0],
       });
 
       return successResponseWithData(res, "Punch-in successful", { user_id });
     } else if (punchStatus == 2) {
       const punchRecord = await PunchRecord.findOne({
         where: { user_id, status: 1 },
-        order: [['createdAt', 'DESC']],
+        order: [["createdAt", "DESC"]],
       });
 
       if (!punchRecord) {
@@ -57,9 +58,56 @@ exports.punchIn = async (req, res) => {
       return successResponseWithData(res, "Punch-out successful", { user_id });
     }
 
-    return validationErrorWithData(res, "Invalid punch status", { punchStatus });
+    return validationErrorWithData(res, "Invalid punch status", {
+      punchStatus,
+    });
   } catch (error) {
     console.log(error);
     return errorResponse(res, "Internal Server Error");
+  }
+};
+
+exports.punchInCheck = async (req, res) => {
+  const token = req.headers.token;
+
+  try {
+    const session = await Auth.findOne({
+      where: { session_token: token },
+      include: [{ model: User, as: "user" }],
+    });
+
+    if (!session) {
+      return errorResponse(res, "Invalid session token");
+    }
+
+    const user_id = session.dataValues.session_user_id;
+
+    if (!user_id) {
+      return errorResponse(res, "User ID not found in session");
+    }
+
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    const punchRecord = await PunchRecord.findOne({
+      where: {
+        user_id,
+        punch_date: currentDate,
+        status: { [Op.or]: [1, 2] }, 
+      },
+    });
+
+    if (punchRecord) {
+      return successResponseWithData(res, "Punch record found", {
+        is_puching: punchRecord.status === 1,
+        punch_date: punchRecord.punch_date,
+        status: punchRecord.status,
+      });
+    } else {
+      return successResponseWithData(res, "No punch record found for today", {
+        is_puching: false,
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };

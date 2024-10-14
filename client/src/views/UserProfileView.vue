@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import ClientLayout from "@/components/layout/ClientLayout.vue";
 import { Button } from '@/components/ui/button';
 import { ApiWrapper } from '@/helpers/apiWrapper';
@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { LoaderCircle, ChevronLeft } from 'lucide-vue-next';
 import { Textarea } from '@/components/ui/textarea'
+import { useUserStore } from '@/stores'
 
 const isLoading = ref(false)
 
@@ -36,16 +37,21 @@ const onSubmit = form.handleSubmit(async (values) => {
     isLoading.value = true
     const form_data = new FormData();
     form_data.append("name", values.name);
-    form_data.append("email", values.email);
     form_data.append("phone", values.phone);
     form_data.append("address", values.address);
 
     try {
-        const response = await ApiWrapper("auth/sign-in", form_data);
+        const response = await ApiWrapper("user/update", form_data);
 
         if (response.success == 1) {
             isLoading.value = false
             toast.success(response.message)
+            useUserStore().setUserDetails({
+                name: values.name,
+                phone: values.phone,
+                address: values.address,
+                email: values.email
+            })
         }
         else {
             isLoading.value = false
@@ -55,6 +61,30 @@ const onSubmit = form.handleSubmit(async (values) => {
         isLoading.value = false
         console.error("Error sending OTP:", e);
     }
+});
+
+const userDetails = async () => {
+    try {
+        const response = await ApiWrapper("user/detail");
+
+        if (response.success == 1) {
+            const { name, email, phone, address } = response.data;
+            form.setValues({
+                name,
+                email,
+                phone,
+                address: address || '',
+            });
+            useUserStore().setUserDetails(response.data)
+        }
+
+    } catch (e) {
+        console.error("Error sending OTP:", e);
+    }
+}
+
+onMounted(() => {
+    userDetails()
 });
 </script>
 
