@@ -92,7 +92,7 @@ exports.punchInCheck = async (req, res) => {
       where: {
         user_id,
         punch_date: currentDate,
-        status: { [Op.or]: [1, 2] }, 
+        status: { [Op.or]: [1, 2] },
       },
     });
 
@@ -109,5 +109,46 @@ exports.punchInCheck = async (req, res) => {
     }
   } catch (e) {
     console.log(e);
+  }
+};
+
+exports.getPunchHistory = async (req, res) => {
+  const token = req.headers.token;
+
+  try {
+    const session = await Auth.findOne({
+      where: { session_token: token },
+      include: [{ model: User, as: "user" }],
+    });
+
+    if (!session) {
+      return errorResponse(res, "Invalid session token");
+    }
+
+    const user_id = session.dataValues.session_user_id;
+
+    if (!user_id) {
+      return errorResponse(res, "User ID not found in session");
+    }
+
+    const punchRecords = await PunchRecord.findAll({
+      where: { user_id },
+      order: [["punch_date", "DESC"]],
+    });
+
+    if (punchRecords.length > 0) {
+      return successResponseWithData(res, "Punch history found", {
+        punchRecords,
+      });
+    } else {
+      return successResponseWithData(
+        res,
+        "No punch history found for the user",
+        { punchRecords: [] }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res, "Internal Server Error");
   }
 };

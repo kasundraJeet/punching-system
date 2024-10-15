@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted} from 'vue'
+import { onMounted } from 'vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +14,7 @@ import { LogOut, CircleUserRound, Info } from 'lucide-vue-next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'vue-router';
 import { ApiWrapper } from '@/helpers/apiWrapper';
-import { useAuthStore , useUserStore } from '@/stores'
+import { useAuthStore, useUserStore } from '@/stores'
 import { toast } from 'vue-sonner';
 
 const authStore = useAuthStore()
@@ -35,7 +35,7 @@ const userDetails = async () => {
 }
 
 onMounted(() => {
-    if(!useUserStore().userDetails){
+    if (!useUserStore().userDetails) {
         userDetails()
     }
 });
@@ -79,6 +79,12 @@ async function handleLogOut() {
                                 <RouterLink to="/profile" class="flex items-center">
                                     <CircleUserRound class="mr-2 h-4 w-4" />
                                     Profile
+                                </RouterLink>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem as-child>
+                                <RouterLink to="/puch-history" class="flex items-center">
+                                    <CircleUserRound class="mr-2 h-4 w-4" />
+                                    Puch History
                                 </RouterLink>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />

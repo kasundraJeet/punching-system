@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import('@/views/UserProfileView.vue')
     },
     {
+      path: '/puch-history',
+      name: 'puch-history',
+      component: () => import('@/views/PuchHistoryView.vue')
+    },
+    {
       path: '/auth',
       children: [
         {

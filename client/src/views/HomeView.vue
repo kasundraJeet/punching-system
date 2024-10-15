@@ -122,8 +122,13 @@ onMounted(() => {
             :key="word" class="animated-word">{{ word
             }}</span>
         </h2>
+        <div class="flex justify-center mt-4">
+          <Button as-child>
+            <router-link to="/puch-history"> Check Puch History </router-link>
+        </Button>
       </div>
     </div>
+    </div>  
   </ClientLayout>
 </template>
 
